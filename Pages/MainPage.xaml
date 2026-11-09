@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LayoutsDemoApp.Pages.MainPage"
+             Title="Dashboard"
+             BackgroundColor="{AppThemeBinding Light={StaticResource PageLight}, Dark={StaticResource PageDark}}">
+
+    <Grid>
+        <!-- Pull to refresh wraps the ScrollView -->
+        <RefreshView x:Name="Refresher" Refreshing="OnRefreshing">
+            <ScrollView>
+                <!-- Backbone: vertical stack, hidden until loading finishes -->
+                <VerticalStackLayout x:Name="ContentStack" Padding="16" Spacing="16" IsVisible="False">
+
+                    <!-- 1. HEADER: title + AbsoluteLayout notification badge -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Dashboard" Style="{StaticResource TitleLabel}" />
+                        <AbsoluteLayout Grid.Column="1" WidthRequest="44" HeightRequest="44">
+                            <Image Source="bell.png"
+                                   AbsoluteLayout.LayoutBounds="0,8,32,32" />
+                            <BoxView Color="Red" CornerRadius="7"
+                                     AbsoluteLayout.LayoutBounds="24,4,14,14" />
+                        </AbsoluteLayout>
+                    </Grid>
+
+                    <!-- 2. SEARCH (filters the tags below) -->
+                    <SearchBar x:Name="TagSearch"
+                               Placeholder="Search tags..."
+                               TextChanged="OnSearchChanged" />
+
+                    <!-- 3. PROFILE CARD: Border > Grid > StackLayout -->
+                    <Border BackgroundColor="{AppThemeBinding Light={StaticResource CardLight}, Dark={StaticResource CardDark}}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="14">
+                        <Grid ColumnDefinitions="80,*" ColumnSpacing="14">
+
+                            <!-- Circular image: Using Frame here because it supports IsClippedToBounds -->
+                            <Frame Grid.Column="0"
+                                   WidthRequest="80" HeightRequest="80"
+                                   CornerRadius="40" Padding="0"
+                                   IsClippedToBounds="True"
+                                   HasShadow="False"
+                                   BorderColor="Transparent"
+                                   VerticalOptions="Start">
+                                <Image Source="profile.png" Aspect="AspectFill" />
+                            </Frame>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Aarav Sharma" Style="{StaticResource BodyLabel}" />
+                                <Label Text="Mobile App Developer" Style="{StaticResource MutedLabel}" />
+                                <Button x:Name="FollowButton"
+                                        Text="Follow"
+                                        Margin="0,8,0,0"
+                                        HorizontalOptions="Start"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Clicked="OnFollowClicked" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- 4. STATS ROW: 3 nested vertical StackLayouts, spaced evenly -->
+                    <Grid ColumnDefinitions="*,*,*">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label x:Name="PostsLabel" Text="48" Style="{StaticResource StatNumber}" />
+                            <Label Text="📝 Posts" Style="{StaticResource StatCaption}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label x:Name="FollowersLabel" Text="1,280" Style="{StaticResource StatNumber}" />
+                            <Label Text="👥 Followers" Style="{StaticResource StatCaption}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2">
+                            <Label Text="310" Style="{StaticResource StatNumber}" />
+                            <Label Text="➡️ Following" Style="{StaticResource StatCaption}" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- 5. TAG LIST: FlexLayout with wrapping, tappable tags -->
+                    <FlexLayout x:Name="TagLayout" Wrap="Wrap" Direction="Row" JustifyContent="Start">
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Design" Style="{StaticResource TagLabel}" />
+                        </Border>
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Mobile" Style="{StaticResource TagLabel}" />
+                        </Border>
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="UI" Style="{StaticResource TagLabel}" />
+                        </Border>
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Xamarin" Style="{StaticResource TagLabel}" />
+                        </Border>
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="C#" Style="{StaticResource TagLabel}" />
+                        </Border>
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Layouts" Style="{StaticResource TagLabel}" />
+                        </Border>
+                        <Border BackgroundColor="{AppThemeBinding Light={StaticResource TagLight}, Dark={StaticResource TagDark}}"
+                                StrokeThickness="0" StrokeShape="RoundRectangle 18"
+                                Padding="14,7" Margin="0,0,8,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTagTapped" />
+                            </Border.GestureRecognizers>
+                            <Label Text="Cross-platform" Style="{StaticResource TagLabel}" />
+                        </Border>
+                    </FlexLayout>
+
+                    <!-- 6. CLOSING BUTTON -->
+                    <Button Text="View Full Profile"
+                            HorizontalOptions="Center"
+                            Style="{StaticResource PrimaryButton}"
+                            Clicked="OnViewProfileClicked" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <!-- Loading state: shown first, then hidden -->
+        <VerticalStackLayout x:Name="LoadingPanel"
+                             VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+            <ActivityIndicator x:Name="Spinner" IsRunning="True"
+                               Color="{StaticResource Accent}"
+                               WidthRequest="48" HeightRequest="48" />
+            <Label Text="Loading dashboard..." Style="{StaticResource MutedLabel}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
